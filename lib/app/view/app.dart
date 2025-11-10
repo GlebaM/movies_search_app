@@ -12,10 +12,11 @@ class MoviesSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HookedBlocConfigProvider(
-      injector: () => getIt,
+      injector: () => getIt.call,
       child: DismissKeyboard(
         child: MaterialApp(
           title: 'Movies Search',
+          debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: ThemeMode.dark,

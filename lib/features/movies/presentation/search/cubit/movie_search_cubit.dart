@@ -11,7 +11,7 @@ import 'movie_search_state.dart';
 @injectable
 class MovieSearchCubit extends Cubit<MovieSearchState> {
   MovieSearchCubit(this._searchMovies)
-    : _debounceDuration = const Duration(milliseconds: 400),
+    : _debounceDuration = const Duration(milliseconds: 500),
       super(const MovieSearchState());
 
   final SearchMovies _searchMovies;
@@ -24,6 +24,7 @@ class MovieSearchCubit extends Cubit<MovieSearchState> {
 
     if (trimmed.isEmpty) {
       emit(const MovieSearchState());
+
       return;
     }
 

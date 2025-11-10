@@ -5,6 +5,7 @@ import 'package:movies_search_app/core/error/repository_exception.dart';
 import 'package:movies_search_app/features/movies/data/models/movie_detail.dart';
 import 'package:movies_search_app/features/movies/data/models/movie_rating.dart';
 import 'package:movies_search_app/features/movies/domain/repositories/movie_repository.dart';
+import 'package:movies_search_app/features/movies/domain/usecases/get_movie_detail.dart';
 import 'package:movies_search_app/features/movies/presentation/detail/cubit/movie_detail_cubit.dart';
 import 'package:movies_search_app/features/movies/presentation/detail/cubit/movie_detail_state.dart';
 
@@ -16,7 +17,7 @@ void main() {
 
   setUp(() {
     repository = _MockMovieRepository();
-    cubit = MovieDetailCubit(repository);
+    cubit = MovieDetailCubit(GetMovieDetail(repository: repository));
   });
 
   tearDown(() async {
@@ -62,13 +63,14 @@ void main() {
     await cubit.loadMovie(imdbId);
     await Future<void>.delayed(Duration.zero);
 
-    expect(
-      emitted,
-      <MovieDetailState>[
-        const MovieDetailState(status: MovieDetailStatus.loading, imdbId: imdbId),
-        MovieDetailState(status: MovieDetailStatus.success, imdbId: imdbId, movie: detail),
-      ],
-    );
+    expect(emitted, <MovieDetailState>[
+      const MovieDetailState(status: MovieDetailStatus.loading, imdbId: imdbId),
+      MovieDetailState(
+        status: MovieDetailStatus.success,
+        imdbId: imdbId,
+        movie: detail,
+      ),
+    ]);
 
     await subscription.cancel();
   });
@@ -84,17 +86,14 @@ void main() {
     await cubit.loadMovie(imdbId);
     await Future<void>.delayed(Duration.zero);
 
-    expect(
-      emitted,
-      const <MovieDetailState>[
-        MovieDetailState(status: MovieDetailStatus.loading, imdbId: imdbId),
-        MovieDetailState(
-          status: MovieDetailStatus.failure,
-          imdbId: imdbId,
-          errorMessage: 'error',
-        ),
-      ],
-    );
+    expect(emitted, const <MovieDetailState>[
+      MovieDetailState(status: MovieDetailStatus.loading, imdbId: imdbId),
+      MovieDetailState(
+        status: MovieDetailStatus.failure,
+        imdbId: imdbId,
+        errorMessage: 'error',
+      ),
+    ]);
 
     await subscription.cancel();
   });

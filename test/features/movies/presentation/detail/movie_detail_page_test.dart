@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:hooked_bloc/hooked_bloc.dart';
 
 import 'package:movies_search_app/features/movies/data/models/movie_detail.dart';
 import 'package:movies_search_app/features/movies/data/models/movie_rating.dart';
 import 'package:movies_search_app/features/movies/domain/repositories/movie_repository.dart';
+import 'package:movies_search_app/features/movies/domain/usecases/get_movie_detail.dart';
+import 'package:movies_search_app/features/movies/presentation/detail/cubit/movie_detail_cubit.dart';
 import 'package:movies_search_app/features/movies/presentation/detail/view/movie_detail_page.dart';
 
 class _MockMovieRepository extends Mock implements MovieRepository {}
 
 void main() {
   late MovieRepository repository;
+  late GetMovieDetail getMovieDetail;
 
   setUp(() {
     repository = _MockMovieRepository();
+    getMovieDetail = GetMovieDetail(repository: repository);
   });
 
   const imdbId = 'tt0372784';
@@ -45,9 +49,16 @@ void main() {
     boxOffice: r'$100,000,000',
   );
 
+  T injector<T extends Object>([String? instanceName, dynamic param1, dynamic param2]) {
+    if (T == MovieDetailCubit) {
+      return MovieDetailCubit(getMovieDetail) as T;
+    }
+    throw UnimplementedError('No injector registered for type $T');
+  }
+
   Widget buildSubject() {
-    return RepositoryProvider<MovieRepository>.value(
-      value: repository,
+    return HookedBlocConfigProvider(
+      injector: () => injector,
       child: MaterialApp(
         home: MovieDetailPage(imdbId: imdbId, title: 'Batman Begins'),
       ),
