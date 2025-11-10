@@ -3,6 +3,7 @@
 A Flutter application that lets you discover movies through the public OMDb API. Search by title, browse results in a clean list, and dive into detailed information with rich metadata and ratings.
 
 ## Features
+
 - 🔍 Debounced movie search with graceful empty/error states
 - 📄 Detail view with plot, cast, crew, ratings, and box-office metadata
 - 🧱 Layered architecture (data/domain/presentation) powered by Cubit/BLoC
@@ -10,6 +11,7 @@ A Flutter application that lets you discover movies through the public OMDb API.
 - ✅ Unit and widget tests covering repositories, cubits, and key UI flows
 
 ## Tech Stack
+
 - Flutter 3.24+
 - `flutter_bloc` + `equatable`
 - `dio` for networking
@@ -19,6 +21,7 @@ A Flutter application that lets you discover movies through the public OMDb API.
 ## Getting Started
 
 ### 1. Configure environment variables
+
 Create a `.env` file in the project root based on the provided example:
 
 ```
@@ -58,6 +61,7 @@ flutter test
 ```
 
 ## Project Structure
+
 ```
 lib/
   app/                # Root widgets and theming
@@ -70,8 +74,10 @@ lib/
 ```
 
 ## Notes
+
 - Networking errors are surfaced to the UI with retry actions.
 - The app uses a debounced search to avoid unnecessary API calls.
 - Logging is enabled in debug builds through a custom Dio interceptor.
+- Debug banner is disabled to mirror production visuals for recruitment purposes.
 
 Enjoy exploring movies! 🎬
