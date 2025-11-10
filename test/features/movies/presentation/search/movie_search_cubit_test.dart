@@ -3,17 +3,17 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:movies_search_app/core/error/repository_exception.dart';
 import 'package:movies_search_app/features/movies/data/models/movie_summary.dart';
-import 'package:movies_search_app/features/movies/domain/repositories/movie_repository.dart';
+import 'package:movies_search_app/features/movies/domain/usecases/search_movies.dart';
 import 'package:movies_search_app/features/movies/presentation/search/cubit/movie_search_cubit.dart';
 import 'package:movies_search_app/features/movies/presentation/search/cubit/movie_search_state.dart';
 
-class _MockMovieRepository extends Mock implements MovieRepository {}
+class _MockSearchMovies extends Mock implements SearchMovies {}
 
 void main() {
-  late MovieRepository repository;
+  late SearchMovies searchMovies;
 
   setUp(() {
-    repository = _MockMovieRepository();
+    searchMovies = _MockSearchMovies();
   });
 
   group('MovieSearchCubit', () {
@@ -26,7 +26,7 @@ void main() {
     );
 
     test('emits initial state when query is empty', () {
-      final cubit = MovieSearchCubit(repository, debounce: Duration.zero);
+      final cubit = MovieSearchCubit(searchMovies);
 
       cubit.search('   ');
 
@@ -36,16 +36,16 @@ void main() {
 
     test('emits loading then success when search succeeds', () async {
       when(
-        () => repository.searchMovies('Batman'),
+        () => searchMovies('Batman'),
       ).thenAnswer((_) async => <MovieSummary>[movie]);
 
-      final cubit = MovieSearchCubit(repository, debounce: Duration.zero);
+      final cubit = MovieSearchCubit(searchMovies);
 
       final emittedStates = <MovieSearchState>[];
       final subscription = cubit.stream.listen(emittedStates.add);
 
       cubit.search('Batman');
-      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(const Duration(milliseconds: 600));
 
       expect(emittedStates, <MovieSearchState>[
         const MovieSearchState(
@@ -65,16 +65,16 @@ void main() {
 
     test('emits failure when repository throws', () async {
       when(
-        () => repository.searchMovies('Batman'),
+        () => searchMovies('Batman'),
       ).thenThrow(RepositoryException('Network error'));
 
-      final cubit = MovieSearchCubit(repository, debounce: Duration.zero);
+      final cubit = MovieSearchCubit(searchMovies);
 
       final emittedStates = <MovieSearchState>[];
       final subscription = cubit.stream.listen(emittedStates.add);
 
       cubit.search('Batman');
-      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(const Duration(milliseconds: 600));
 
       expect(emittedStates, <MovieSearchState>[
         const MovieSearchState(

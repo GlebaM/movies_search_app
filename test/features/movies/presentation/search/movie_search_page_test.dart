@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:hooked_bloc/hooked_bloc.dart';
 
 import 'package:movies_search_app/features/movies/data/models/movie_summary.dart';
 import 'package:movies_search_app/features/movies/domain/repositories/movie_repository.dart';
+import 'package:movies_search_app/features/movies/domain/usecases/search_movies.dart';
+import 'package:movies_search_app/features/movies/presentation/search/cubit/movie_search_cubit.dart';
 import 'package:movies_search_app/features/movies/presentation/search/view/movie_search_page.dart';
 
 class _MockMovieRepository extends Mock implements MovieRepository {}
 
 void main() {
   late MovieRepository repository;
+  late SearchMovies searchMovies;
 
   setUp(() {
     repository = _MockMovieRepository();
+    searchMovies = SearchMovies(repository: repository);
   });
 
+  T injector<T extends Object>([String? instanceName, dynamic param1, dynamic param2]) {
+    if (T == MovieSearchCubit) {
+      return MovieSearchCubit(searchMovies) as T;
+    }
+    throw UnimplementedError('No injector registered for type $T');
+  }
+
   Widget buildSubject() {
-    return RepositoryProvider<MovieRepository>.value(
-      value: repository,
+    return HookedBlocConfigProvider(
+      injector: () => injector,
       child: const MaterialApp(home: MovieSearchPage()),
     );
   }
