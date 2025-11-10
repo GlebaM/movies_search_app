@@ -12,7 +12,14 @@ class MovieDetailContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final posterUrl = movie.poster.toLowerCase() == 'n/a' ? null : movie.poster;
-
+    final infoValues = <String>[
+      movie.year,
+      movie.rated,
+      movie.runtime,
+      movie.genre,
+    ];
+    bool hasContent(String value) =>
+        value.isNotEmpty && value.toLowerCase().trim() != 'n/a';
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 32),
@@ -47,10 +54,8 @@ class MovieDetailContent extends StatelessWidget {
                     spacing: 12,
                     runSpacing: 8,
                     children: <Widget>[
-                      _InfoChip(label: movie.year),
-                      _InfoChip(label: movie.rated),
-                      _InfoChip(label: movie.runtime),
-                      _InfoChip(label: movie.genre),
+                      for (final value in infoValues)
+                        if (hasContent(value)) _InfoChip(label: value),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -126,7 +131,8 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(label: Text(label));
+    final theme = Theme.of(context).colorScheme;
+    return Chip(backgroundColor: theme.tertiaryContainer, label: Text(label));
   }
 }
 
@@ -151,7 +157,12 @@ class _Section extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(body, style: theme.textTheme.bodyMedium),
+          Text(
+            body,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -169,7 +180,7 @@ class _RatingTile extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.primaryContainer,
+        backgroundColor: theme.colorScheme.onTertiaryFixed,
         child: Text(
           rating.value.split('/').first,
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -178,7 +189,12 @@ class _RatingTile extends StatelessWidget {
         ),
       ),
       title: Text(rating.source, style: theme.textTheme.titleMedium),
-      subtitle: Text(rating.value, style: theme.textTheme.bodyMedium),
+      subtitle: Text(
+        rating.value,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
     );
   }
 }
@@ -200,17 +216,27 @@ class _HighlightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
+      color: theme.colorScheme.surfaceContainerHighest,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: <Widget>[
-            Icon(icon, size: 40, color: theme.colorScheme.primary),
+            Icon(
+              icon,
+              size: 40,
+              color: theme.colorScheme.onTertiaryFixedVariant,
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(title, style: theme.textTheme.titleMedium),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onTertiaryFixedVariant,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     value,
@@ -220,7 +246,12 @@ class _HighlightCard extends StatelessWidget {
                   ),
                   if (subtitle != null) ...<Widget>[
                     const SizedBox(height: 4),
-                    Text(subtitle!, style: theme.textTheme.bodyMedium),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ],
               ),
