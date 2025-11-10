@@ -36,6 +36,7 @@ class _MovieCard extends StatelessWidget {
     final posterUrl = movie.poster.toLowerCase() == 'n/a' ? null : movie.poster;
 
     return Card(
+      color: theme.colorScheme.surfaceContainerHighest,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -91,9 +92,9 @@ class _MovieCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Chip(
                       label: Text(movie.type.toUpperCase()),
-                      backgroundColor: theme.colorScheme.primaryContainer,
+                      backgroundColor: theme.colorScheme.tertiaryContainer,
                       labelStyle: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
+                        color: theme.colorScheme.onTertiaryContainer,
                         letterSpacing: 0.8,
                       ),
                     ),
