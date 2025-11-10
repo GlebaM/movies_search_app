@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../models/movie_detail.dart';
 import '../models/omdb_search_response.dart';
 
+@lazySingleton
 class OmdbApiClient {
   OmdbApiClient(this._dio);
 

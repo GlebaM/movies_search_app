@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../../core/error/repository_exception.dart';
 import '../../../data/models/movie_summary.dart';
-import '../../../domain/repositories/movie_repository.dart';
+import '../../../domain/usecases/search_movies.dart';
 import 'movie_search_state.dart';
 
+@injectable
 class MovieSearchCubit extends Cubit<MovieSearchState> {
-  MovieSearchCubit(
-    this._repository, {
-    Duration debounce = const Duration(milliseconds: 400),
-  }) : _debounceDuration = debounce,
-       super(const MovieSearchState());
+  MovieSearchCubit(this._searchMovies)
+    : _debounceDuration = const Duration(milliseconds: 400),
+      super(const MovieSearchState());
 
-  final MovieRepository _repository;
+  final SearchMovies _searchMovies;
   final Duration _debounceDuration;
   Timer? _debounce;
 
@@ -40,7 +40,7 @@ class MovieSearchCubit extends Cubit<MovieSearchState> {
     );
 
     try {
-      final results = await _repository.searchMovies(query);
+      final results = await _searchMovies(query);
       if (results.isEmpty) {
         emit(
           state.copyWith(

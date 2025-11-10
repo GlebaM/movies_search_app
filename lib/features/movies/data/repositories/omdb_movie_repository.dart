@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/repository_exception.dart';
 import '../../domain/repositories/movie_repository.dart';
@@ -6,6 +7,7 @@ import '../clients/omdb_api_client.dart';
 import '../models/movie_detail.dart';
 import '../models/movie_summary.dart';
 
+@LazySingleton(as: MovieRepository)
 class OmdbMovieRepository implements MovieRepository {
   OmdbMovieRepository({required OmdbApiClient apiClient})
     : _apiClient = apiClient;
