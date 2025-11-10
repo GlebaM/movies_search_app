@@ -16,6 +16,7 @@ class MoviesSearchApp extends StatelessWidget {
       child: DismissKeyboard(
         child: MaterialApp(
           title: 'Movies Search',
+          debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: ThemeMode.dark,
